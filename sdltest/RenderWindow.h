@@ -12,7 +12,11 @@ public:
 	void clear();
 	void render(Entity& p_entity);
 	void display();
+	void getWindowSize(int* p_w, int* p_h);
+	Uint32 getWindowID();
+	float getMultiplier();
 private:
+	float multiplier = 4;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 
