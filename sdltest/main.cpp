@@ -6,7 +6,7 @@
 
 #include "RenderWindow.h"
 #include "Entity.h"
-
+#include "Physics.h"
 
 
 int main(int argc, char* argv[])
@@ -17,8 +17,8 @@ int main(int argc, char* argv[])
 	auto tp2 = std::chrono::system_clock::now();
 	
 	int screenWidth = 1280;
-	int screenHeight = 720;
-
+	int screenHeight = 800;
+	int ballRadius = 16;
 	if (SDL_Init(SDL_INIT_VIDEO) > 0)
 	{
 		std::cout << "Hm STD_Init HAS FAILED(((  SDL_ERROR: " << SDL_GetError() << std::endl;
@@ -33,10 +33,16 @@ int main(int argc, char* argv[])
 
 	SDL_Texture* pong_ball = window.loadTexture("gfx/pong_ball.png");
 	SDL_Texture* pong_platform = window.loadTexture("gfx/pong_platform.png");
-
-
+	SDL_Texture* top_border = window.loadTexture("gfx/top_border.png");
+	SDL_Texture* bottom_border = window.loadTexture("gfx/bottom_border.png");
+	
+	Entity etop_border(0, 0, top_border);
+	Entity ebottom_border(0, screenHeight/4-32, bottom_border);
+	etop_border.setSize(320,32);
+	ebottom_border.setSize(320, 32);
+	
 	std::vector<Entity> entities = {
-	Entity(128,128, pong_ball)
+	Entity (128,128, pong_ball)
 	};
 	std::vector<Entity> platforms = {
 	Entity(64,32, pong_platform),
@@ -47,10 +53,10 @@ int main(int argc, char* argv[])
 		
 		i.setSize(32, 64);
 	}
-	//k 
-	float ballAngle = M_PI / 3;
-	float ballY = 0;
-	float ballX = 0;
+	//k  
+	double ballAngle = M_PI / 6;
+	float ballY = 50;
+	float ballX = 80;
 	float speed = 200.0f;
 	bool gameRunning = true;
 	SDL_Event event;
@@ -87,29 +93,61 @@ int main(int argc, char* argv[])
 		}
 		window.clear();
 
-		
+		window.render(etop_border);
+		window.render(ebottom_border);
 
 		for (Entity& i : entities)
 		{
 				
-				ballX += speed * fElapsedTime * sinf(ballAngle);
-				ballY += speed * fElapsedTime * cosf(ballAngle);
-				if (ballY <= 0)
+			
+				ballX += speed * fElapsedTime * SDL_sin(ballAngle);
+				ballY += speed * fElapsedTime * SDL_cos(ballAngle);
+				
+				
+				if (ballY < 0)
 				{
 					ballAngle = M_PI - ballAngle;
 				}
-				if (ballY >= screenHeight / window.getMultiplier() - i.getH())
+				std::cout << ballAngle << "\n";
+				i.setX(ballX);
+				i.setY(ballY);
+				if (ballY > screenHeight / window.getMultiplier() - i.getH())
 				{
 					ballAngle =M_PI - ballAngle;
+					
 				}
+				std::cout << ballAngle << "\n";
+				i.setX(ballX);
+				i.setY(ballY);
 				if (ballX <= 0)
 				{
 					ballAngle = 2*M_PI -ballAngle;
 				}
-				if (ballX >= screenWidth/window.getMultiplier()-i.getW())
+				std::cout << ballAngle << "\n";
+				i.setX(ballX);
+				i.setY(ballY);
+				if (ballX > screenWidth/window.getMultiplier()-i.getW())
 				{
-					ballAngle = 2*M_PI - ballAngle ;
+					ballAngle =2*M_PI - ballAngle ;
 				}
+				std::cout << ballAngle << "\n";
+				i.setX(ballX);
+				i.setY(ballY);
+				if (intersect(i, etop_border) == true)
+				{
+					std::cout << " top ";
+					ballAngle =  M_PI -  ballAngle;
+				}
+				std::cout << ballAngle << "\n";
+				i.setX(ballX);
+				i.setY(ballY);
+				if (intersect(i, ebottom_border) == true)
+				{
+					std::cout << " bottom ";
+					ballAngle = M_PI - ballAngle;
+				}
+
+				std::cout << ballAngle << "\n";
 				i.setX(ballX);
 				i.setY(ballY);
 			
@@ -117,7 +155,7 @@ int main(int argc, char* argv[])
 		}
 		for (Entity& i : platforms)
 		{
-			//window.render(i);
+			window.render(i);
 		}
 		
 		
