@@ -67,3 +67,8 @@ float RenderWindow::getMultiplier()
 {
 	return RenderWindow::multiplier;
 }
+
+SDL_Renderer* RenderWindow::getRenderer()
+{
+	return renderer;
+}

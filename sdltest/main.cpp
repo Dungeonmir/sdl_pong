@@ -1,19 +1,21 @@
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 #include <iostream>
 #include <vector>
 #include <chrono>
 #include <random>
+#include <string>
 
 #include "RenderWindow.h"
 #include "Entity.h"
 #include "Physics.h"
-
+#include "Text.h"
 
 int main(int argc, char* argv[])
 {
 
-	
+	std::string message = "0";
 	auto tp1 = std::chrono::system_clock::now();
 	auto tp2 = std::chrono::system_clock::now();
 	
@@ -32,6 +34,12 @@ int main(int argc, char* argv[])
 		std::cout << "Img_init has failed. Error: " << SDL_GetError() << std::endl;
 	}
 	
+	if (TTF_Init() !=0)
+	{
+		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "TTF_Init error...");
+		SDL_Quit();
+		return 1;
+	}
 	RenderWindow window("Looks like a game", screenWidth, screenHeight);
 
 	SDL_Texture* pong_ball = window.loadTexture("gfx/pong_ball.png");
@@ -41,29 +49,36 @@ int main(int argc, char* argv[])
 	
 	Entity etop_border(0, 0, top_border);
 	Entity ebottom_border(0, screenHeight/4-32, bottom_border);
+	Entity platform(0, 32, pong_platform);
+	platform.setSize(32, 64);
+	platform.setX(-8);
 	etop_border.setSize(320,32);
 	ebottom_border.setSize(320, 32);
 	
 	std::vector<Entity> entities = {
 	Entity (128,128, pong_ball)
 	};
-	std::vector<Entity> platforms = {
-	Entity(64,32, pong_platform),
-	Entity(128,32, pong_platform)
-	};
-	for (Entity& i : platforms)
-	{
-		
-		i.setSize(32, 64);
-	}
-	//k  
+	  
+	const std::string resPath = "fonts/dungeonmir.ttf";
+	SDL_Color color= { 255,255,255,255 };
+	SDL_Texture* image = renderText(message, resPath,color,16,window.getRenderer());
+	int imageW;
+	int imageH;
+	SDL_QueryTexture(image, NULL, NULL, &imageW, &imageH);
+	int imageX = screenWidth  / 8 - imageW / 2;
+	int imageY = screenHeight / 8 - imageH /2-80;
+
+	SDL_RenderClear(window.getRenderer());
+	Entity e_image(imageX, imageY, image);
+	e_image.setSize(imageW, imageH);
+	int count = 0;
 	
 	double ballAngle = M_PI / 6;
 	float ballY = 50;
 	float ballX = 80;
 	float speed = 0.0f;
 	float fspeed = 200.0f;
-	int maxSpeed = 1500;
+	int maxSpeed = 700;
 	bool gameRunning = true;
 	bool pause = true;
 	SDL_Event event;
@@ -197,11 +212,16 @@ int main(int argc, char* argv[])
 					
 					ballAngle = M_PI - ballAngle;
 				}
-				if (intersect(i, platforms.at(0)) == true)
+				if (intersect(i, platform) == true)
 				{
+					message = std::to_string(++count);
+					image = renderText(message, resPath, color, 16, window.getRenderer());
+					SDL_QueryTexture(image, NULL, NULL, &imageW, &imageH);
+					e_image.setTex(image);
+					e_image.setSize(imageW, imageH);
 					if (fspeed < maxSpeed && pause ==false)
 					{
-						fspeed += 100;
+						fspeed += 50;
 					}
 					
 					ballAngle = ((rand() % 75) + 25)*M_PI/180;
@@ -213,12 +233,12 @@ int main(int argc, char* argv[])
 			
 			window.render(i);
 		}
-		for (Entity& i : platforms)
-		{
-			i.setX(xMouse/4-(i.getW()/2));
-			i.setY(yMouse/4-(i.getH()/2));
-			window.render(i);
-		}
+		
+			
+			platform.setY(yMouse/4-(platform.getH()/2));
+			window.render(platform);
+			window.render(e_image);
+		
 		
 		
 		

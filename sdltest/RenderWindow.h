@@ -15,6 +15,7 @@ public:
 	void getWindowSize(int* p_w, int* p_h);
 	Uint32 getWindowID();
 	float getMultiplier();
+	SDL_Renderer* getRenderer();
 private:
 	float multiplier = 4;
 	SDL_Window* window;

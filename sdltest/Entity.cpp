@@ -40,6 +40,10 @@ int Entity::getH()
 {
 	return currentFrame.h;
 }
+void Entity::setTex(SDL_Texture* p_tex)
+{
+	tex = p_tex;
+}
 SDL_Texture* Entity::getTex()
 {
 	return tex;

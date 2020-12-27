@@ -1,7 +1,8 @@
 ﻿  main.cpp
-C:\Users\dunge\source\repos\sdltest\sdltest\main.cpp(43,41): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
-C:\Users\dunge\source\repos\sdltest\sdltest\main.cpp(148,55): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
-C:\Users\dunge\source\repos\sdltest\sdltest\main.cpp(149,55): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
-C:\Users\dunge\source\repos\sdltest\sdltest\main.cpp(218,19): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
-C:\Users\dunge\source\repos\sdltest\sdltest\main.cpp(219,19): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+C:\Users\dunge\source\repos\sdltest\sdltest\main.cpp(51,41): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+C:\Users\dunge\source\repos\sdltest\sdltest\main.cpp(72,25): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+C:\Users\dunge\source\repos\sdltest\sdltest\main.cpp(72,17): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+C:\Users\dunge\source\repos\sdltest\sdltest\main.cpp(163,55): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
+C:\Users\dunge\source\repos\sdltest\sdltest\main.cpp(164,55): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
+C:\Users\dunge\source\repos\sdltest\sdltest\main.cpp(238,26): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
   sdltest.vcxproj -> C:\Users\dunge\source\repos\sdltest\x64\Debug\sdltest.exe

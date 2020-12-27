@@ -16,6 +16,7 @@ public:
 	void setSize(int w, int h);
 	int getW();
 	int getH();
+	void setTex(SDL_Texture* p_tex);
 	SDL_Texture* getTex();
 	SDL_Rect getCurrrentFrame();
 private:
