@@ -1,6 +1,6 @@
 #include "Text.h"
 
-SDL_Texture* renderText(const std::string& message, const std::string& fontFile,
+SDL_Texture* renderText(const std::string & message, const std::string& fontFile,
 	SDL_Color color, int fontSize, SDL_Renderer* renderer)
 {
 	//Открываем шрифт
@@ -10,6 +10,7 @@ SDL_Texture* renderText(const std::string& message, const std::string& fontFile,
 		SDL_LogError(SDL_LOG_CATEGORY_ERROR, "TTF_OpenFont error...");
 		return nullptr;
 	}
+	
 	SDL_Surface* surface = TTF_RenderText_Blended(font, message.c_str(), color);
 	if (surface == nullptr) 
 	{

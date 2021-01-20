@@ -11,6 +11,7 @@
 #include "Entity.h"
 #include "Physics.h"
 #include "Text.h"
+#include "Ball.h"
 
 int main(int argc, char* argv[])
 {
@@ -40,7 +41,7 @@ int main(int argc, char* argv[])
 		SDL_Quit();
 		return 1;
 	}
-	RenderWindow window("Looks like a game", screenWidth, screenHeight);
+	RenderWindow window("I'm sure it's pong game", screenWidth, screenHeight);
 
 	SDL_Texture* pong_ball = window.loadTexture("gfx/pong_ball.png");
 	SDL_Texture* pong_platform = window.loadTexture("gfx/pong_platform.png");
@@ -48,37 +49,33 @@ int main(int argc, char* argv[])
 	SDL_Texture* bottom_border = window.loadTexture("gfx/bottom_border.png");
 	
 	Entity etop_border(0, 0, top_border);
-	Entity ebottom_border(0, screenHeight/4-32, bottom_border);
+	Entity ebottom_border(0, screenHeight/4-6, bottom_border);
 	Entity platform(0, 32, pong_platform);
-	platform.setSize(32, 64);
-	platform.setX(-8);
-	etop_border.setSize(320,32);
-	ebottom_border.setSize(320, 32);
+	platform.setSize(14, 62);
 	
-	std::vector<Entity> entities = {
-	Entity (128,128, pong_ball)
-	};
-	  
-	const std::string resPath = "fonts/dungeonmir.ttf";
+	etop_border.setSize(320,6);
+	ebottom_border.setSize(320, 6);
+	
+	Ball Gameball(window);
+	Gameball.setX(64);
+	Gameball.setY(64);
+
+
+	const std::string resPath = "fonts/OldWizard.ttf";
 	SDL_Color color= { 255,255,255,255 };
-	SDL_Texture* image = renderText(message, resPath,color,16,window.getRenderer());
-	int imageW;
-	int imageH;
-	SDL_QueryTexture(image, NULL, NULL, &imageW, &imageH);
-	int imageX = screenWidth  / 8 - imageW / 2;
-	int imageY = screenHeight / 8 - imageH /2-80;
+	SDL_Texture* text = renderText(message, resPath,color,16,window.getRenderer());
+	int textW;
+	int textH;
+	SDL_QueryTexture(text, NULL, NULL, &textW, &textH);
+	int textX = screenWidth  / 8 - textW / 2;
+	int textY = screenHeight / 8 - textH /2-80;
 
 	SDL_RenderClear(window.getRenderer());
-	Entity e_image(imageX, imageY, image);
-	e_image.setSize(imageW, imageH);
+	Entity eText(textX, textY, text);
+	eText.setSize(textW, textH);
 	int count = 0;
 	
-	double ballAngle = M_PI / 6;
-	float ballY = 50;
-	float ballX = 80;
-	float speed = 0.0f;
-	float fspeed = 200.0f;
-	int maxSpeed = 700;
+	
 	bool gameRunning = true;
 	bool pause = true;
 	SDL_Event event;
@@ -87,11 +84,11 @@ int main(int argc, char* argv[])
 	{
 		if (pause == true)
 		{
-			speed = 0;
+			Gameball.StopMoving();
 		}
 		else if (pause == false)
 		{
-			speed = fspeed;
+			Gameball.ContinueMoving();
 		}
 		tp2 = std::chrono::system_clock::now();
 		std::chrono::duration<float>elapsedTime = tp2 - tp1;
@@ -117,8 +114,8 @@ int main(int argc, char* argv[])
 				}
 				if (currentKeyStates[SDL_SCANCODE_R])
 				{
-					std::cout << "Ball speed = " << speed<<std::endl;
-					fspeed += 200.0f;
+					std::cout << "Ball speed = " << Gameball.GetBallSpeed()<<std::endl;
+					Gameball.IncreaseSpeed(200);
 				}
 				
 			}
@@ -152,96 +149,100 @@ int main(int argc, char* argv[])
 			
 		}
 		window.clear();
-
+		
 		window.render(etop_border);
 		window.render(ebottom_border);
 
-		for (Entity& i : entities)
-		{
-				
+		
+		
 			
-				ballX += speed * fElapsedTime * SDL_sin(ballAngle);
-				ballY += speed * fElapsedTime * SDL_cos(ballAngle);
+		
 				
-				
-				if (ballY < 0)
-				{
-					
-					ballAngle = M_PI - ballAngle;
-				}
-				
-				i.setX(ballX);
-				i.setY(ballY);
-				if (ballY > screenHeight / window.getMultiplier() - i.getH())
-				{
+		Gameball.countPosition(fElapsedTime);
 
-					ballAngle =M_PI - ballAngle;
-					
-				}
-				
-				i.setX(ballX);
-				i.setY(ballY);
-				if (ballX <= 0)
-				{
-					ballX += 1;
-					ballAngle = 2 * M_PI - ballAngle;
-				}
-				
-				i.setX(ballX);
-				i.setY(ballY);
-				if (ballX > screenWidth/window.getMultiplier()-i.getW())
-				{
-					ballX -= 1;
-					ballAngle =2*M_PI - ballAngle ;
-				}
-				
-				i.setX(ballX);
-				i.setY(ballY);
-				if (intersect(i, etop_border) == true)
-				{
-					ballY += 1;
-					
-					ballAngle =  M_PI -  ballAngle;
-				}
-				
-				i.setX(ballX);
-				i.setY(ballY);
-				if (intersect(i, ebottom_border) == true)
-				{
-					ballY -= 1;
-					
-					ballAngle = M_PI - ballAngle;
-				}
-				if (intersect(i, platform) == true)
-				{
-					message = std::to_string(++count);
-					image = renderText(message, resPath, color, 16, window.getRenderer());
-					SDL_QueryTexture(image, NULL, NULL, &imageW, &imageH);
-					e_image.setTex(image);
-					e_image.setSize(imageW, imageH);
-					if (fspeed < maxSpeed && pause ==false)
-					{
-						fspeed += 50;
-					}
-					
-					ballAngle = ((rand() % 75) + 25)*M_PI/180;
-					
-				}
-				
-				i.setX(ballX);
-				i.setY(ballY);
-			
-			window.render(i);
+		if (Gameball.getY() < 0)
+		{
+			Gameball.VerticalChangeDir();
 		}
 		
+		
+
+		if (Gameball.getY() > screenHeight / window.getMultiplier() - Gameball.getH())
+		{
+
+			Gameball.VerticalChangeDir();
 			
-			platform.setY(yMouse/4-(platform.getH()/2));
-			window.render(platform);
-			window.render(e_image);
+		}
 		
 		
+
+		if (Gameball.getX() <= 0)
+		{					
+			message = "Game over!";
+			count = 0;
+			text = renderText(message, resPath, color, 16, window.getRenderer());
+			SDL_QueryTexture(text, NULL, NULL, &textW, &textH);
+			eText.setTex(text);
+			eText.setSize(textW, textH);
+
+			Gameball.setX(Gameball.getX() + 1);
+			Gameball.HorizontalChangeDir();
+		}
 		
 		
+
+		if (Gameball.getX() > screenWidth/window.getMultiplier()-Gameball.getW())
+		{
+
+			Gameball.setX(Gameball.getX() - 1);
+			Gameball.HorizontalChangeDir();
+		}
+		
+		
+
+		if (intersect(Gameball, etop_border) == true)
+		{
+			Gameball.setY(Gameball.getY() + 1);
+			Gameball.VerticalChangeDir();
+		}
+		
+		
+
+		if (intersect(Gameball, ebottom_border) == true)
+		{
+			Gameball.setY(Gameball.getY() - 1);
+			Gameball.VerticalChangeDir();
+		}
+		if (intersect(Gameball, platform) == true)
+		{
+			if (pause == false)
+			{
+				message = std::to_string(++count);
+				text = renderText(message, resPath, color, 16, window.getRenderer());
+				SDL_QueryTexture(text, NULL, NULL, &textW, &textH);
+				eText.setTex(text);
+				eText.setSize(textW, textH);
+				if (pause == false)
+				{
+					Gameball.IncreaseSpeed(50);
+				}
+				//Задать случайный угол 
+				Gameball.SetBallAngle(((rand() % 75) + 25) * M_PI / 180);
+			}
+		}
+				
+		
+			
+		window.render(Gameball);
+		
+		
+		if (yMouse/4 >= platform.getH()/2 and yMouse/4 <= screenHeight/4-platform.getH()/2)
+		{
+			platform.setY(yMouse / 4 - (platform.getH() / 2));
+		}
+		
+		window.render(platform);
+		window.render(eText);
 		window.display();
 
 	}

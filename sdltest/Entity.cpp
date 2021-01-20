@@ -10,6 +10,7 @@ Entity::Entity(float p_x, float p_y, SDL_Texture* p_tex)
 	currentFrame.w = 32;
 	currentFrame.h = 32;
 }
+Entity::Entity() {};
 float Entity::getX()
 {
 	return x;
