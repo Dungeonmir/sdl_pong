@@ -3,6 +3,19 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <iostream>
-
-SDL_Texture* renderText(const std::string &message, const std::string& fontFile,
-	SDL_Color color, int fontSize, SDL_Renderer* renderer);
+#include "Entity.h"
+class Text : public Entity
+{
+public:
+	Text(SDL_Renderer* renderer_p);
+	void print(std::string &message_p);
+private:
+	void renderText();
+	std::string resPath;
+	SDL_Color color;
+	std::string message;
+	int w;
+	int h;
+	int fontSize;
+	SDL_Renderer* renderer;
+};

@@ -16,7 +16,7 @@
 int main(int argc, char* argv[])
 {
 
-	std::string message = "0";
+	std::string message = "Hit the ball!";
 	auto tp1 = std::chrono::system_clock::now();
 	auto tp2 = std::chrono::system_clock::now();
 	
@@ -41,7 +41,7 @@ int main(int argc, char* argv[])
 		SDL_Quit();
 		return 1;
 	}
-	RenderWindow window("I'm sure it's pong game", screenWidth, screenHeight);
+	RenderWindow window("pong game?", screenWidth, screenHeight);
 
 	SDL_Texture* pong_ball = window.loadTexture("gfx/pong_ball.png");
 	SDL_Texture* pong_platform = window.loadTexture("gfx/pong_platform.png");
@@ -60,19 +60,8 @@ int main(int argc, char* argv[])
 	Gameball.setX(64);
 	Gameball.setY(64);
 
-
-	const std::string resPath = "fonts/OldWizard.ttf";
-	SDL_Color color= { 255,255,255,255 };
-	SDL_Texture* text = renderText(message, resPath,color,16,window.getRenderer());
-	int textW;
-	int textH;
-	SDL_QueryTexture(text, NULL, NULL, &textW, &textH);
-	int textX = screenWidth  / 8 - textW / 2;
-	int textY = screenHeight / 8 - textH /2-80;
-
-	SDL_RenderClear(window.getRenderer());
-	Entity eText(textX, textY, text);
-	eText.setSize(textW, textH);
+	Text text(window.getRenderer());
+	text.print(message);
 	int count = 0;
 	
 	
@@ -180,10 +169,7 @@ int main(int argc, char* argv[])
 		{					
 			message = "Game over!";
 			count = 0;
-			text = renderText(message, resPath, color, 16, window.getRenderer());
-			SDL_QueryTexture(text, NULL, NULL, &textW, &textH);
-			eText.setTex(text);
-			eText.setSize(textW, textH);
+			text.print(message);
 
 			Gameball.setX(Gameball.getX() + 1);
 			Gameball.HorizontalChangeDir();
@@ -218,10 +204,7 @@ int main(int argc, char* argv[])
 			if (pause == false)
 			{
 				message = std::to_string(++count);
-				text = renderText(message, resPath, color, 16, window.getRenderer());
-				SDL_QueryTexture(text, NULL, NULL, &textW, &textH);
-				eText.setTex(text);
-				eText.setSize(textW, textH);
+				text.print(message);
 				if (pause == false)
 				{
 					Gameball.IncreaseSpeed(50);
@@ -242,7 +225,7 @@ int main(int argc, char* argv[])
 		}
 		
 		window.render(platform);
-		window.render(eText);
+		window.render(text);
 		window.display();
 
 	}

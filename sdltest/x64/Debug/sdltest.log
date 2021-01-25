@@ -1,7 +1,4 @@
-﻿  main.cpp
-C:\Users\dunge\source\repos\sdltest\sdltest\main.cpp(52,41): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
-C:\Users\dunge\source\repos\sdltest\sdltest\main.cpp(63,7): error C2374: Gameball: переопределение; множественная инициализация
-C:\Users\dunge\source\repos\sdltest\sdltest\main.cpp(59): message : см. объявление "Gameball"
-C:\Users\dunge\source\repos\sdltest\sdltest\main.cpp(76,22): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
-C:\Users\dunge\source\repos\sdltest\sdltest\main.cpp(76,15): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
-C:\Users\dunge\source\repos\sdltest\sdltest\main.cpp(243,29): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+﻿  Text.cpp
+C:\Users\dunge\source\repos\sdltest\sdltest\Text.cpp(9,29): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+C:\Users\dunge\source\repos\sdltest\sdltest\Text.cpp(10,29): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+  sdltest.vcxproj -> C:\Users\dunge\source\repos\sdltest\x64\Debug\sdltest.exe
